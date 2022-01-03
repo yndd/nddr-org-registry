@@ -1,0 +1,14 @@
+apiVersion: org.nddr.yndd.io/v1alpha1
+kind: Organization
+metadata:
+  name: nokia
+  namespace: default
+spec:
+  organization:
+    description: default organization for Nokia
+    register:
+    - {kind: ipam, name: nokia.default}
+    - {kind: network-instance, name: nokia.default}
+    - {kind: as, name: nokia.default}
+    - {kind: vlan, name: nokia.default}
+      
