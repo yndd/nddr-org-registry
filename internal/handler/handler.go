@@ -48,7 +48,7 @@ func (r *handler) WithClient(c client.Client) {
 type handler struct {
 	log logging.Logger
 	// kubernetes
-	client client.Client
+	client resource.ClientApplicator
 
 	speedyMutex sync.Mutex
 	speedy      map[string]int
@@ -95,7 +95,7 @@ func (r *handler) IncrementSpeedy(crName string) {
 
 func (r *handler) CreateOrganizationNamespace(ctx context.Context, cr orgv1alpha1.Org) error {
 	ns := r.buildOrganizationNamespace(cr)
-	if err := r.client.Create(ctx, ns); err != nil {
+	if err := r.client.Apply(ctx, ns); err != nil {
 		return errors.Wrap(err, errApplyNamespace)
 	}
 	return nil
@@ -120,7 +120,7 @@ func (r *handler) buildOrganizationNamespace(cr orgv1alpha1.Org) *corev1.Namespa
 
 func (r *handler) CreateDeploymentNamespace(ctx context.Context, cr orgv1alpha1.Dp) error {
 	ns := r.buildDeploymentNamespace(cr)
-	if err := r.client.Create(ctx, ns); err != nil {
+	if err := r.client.Apply(ctx, ns); err != nil {
 		return errors.Wrap(err, errApplyNamespace)
 	}
 	return nil

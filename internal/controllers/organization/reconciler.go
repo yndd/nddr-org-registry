@@ -161,10 +161,13 @@ func (r *application) handleAppLogic(ctx context.Context, cr orgv1alpha1.Org) (m
 	r.handler.Init(crName)
 
 	if err := r.handler.CreateOrganizationNamespace(ctx, cr); err != nil {
-		return make(map[string]string), nil
+		return make(map[string]string), err
 	}
 
 	register := cr.GetRegister()
+	for key, registryName := range register {
+		log.Debug("register", "key", key, "registryName", registryName)
+	}
 	aas := cr.GetAddressAllocationStrategy()
 	cr.SetStatus("up")
 	cr.SetReason("")

@@ -204,7 +204,7 @@ func (r *application) handleAppLogic(ctx context.Context, cr orgv1alpha1.Dp) (ma
 	}
 
 	if err := r.handler.CreateDeploymentNamespace(ctx, cr); err != nil {
-		return make(map[string]string), nil
+		return make(map[string]string), err
 	}
 
 	if cr.GetAdminState() == "disable" {

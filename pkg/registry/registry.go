@@ -92,7 +92,7 @@ func (r *registry) GetRegisterName(organizationName string, deploymentName strin
 	if deploymentName == "" {
 		return organizationName
 	}
-	return strings.Join([]string{organizationName, deploymentName}, ".")
+	return deploymentName
 }
 
 func (r *registry) GetRegister(ctx context.Context, namespace, registerName string) (map[string]string, error) {
