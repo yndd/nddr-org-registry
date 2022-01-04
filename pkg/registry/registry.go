@@ -44,9 +44,9 @@ type RegisterKind string
 const (
 	RegisterKindIpam            RegisterKind = "ipam"
 	RegisterKindAs              RegisterKind = "as"
-	RegisterKindNetworkInstance RegisterKind = "network-instance"
+	RegisterKindNetworkInstance RegisterKind = "ni"
 	RegisterKindVlan            RegisterKind = "vlan"
-	RegisterKindEndpointGroup   RegisterKind = "endpoint-group"
+	RegisterKindEndpointGroup   RegisterKind = "epg"
 )
 
 func (r RegisterKind) String() string {
@@ -56,11 +56,11 @@ func (r RegisterKind) String() string {
 	case RegisterKindAs:
 		return "as"
 	case RegisterKindNetworkInstance:
-		return "network-instance"
+		return "ni"
 	case RegisterKindVlan:
 		return "vlan"
 	case RegisterKindEndpointGroup:
-		return "endpoint-group"
+		return "epg"
 	}
 	return "unknown"
 }
