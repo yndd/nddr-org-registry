@@ -36,6 +36,7 @@ import (
 
 const (
 	nddNamespace = "ndd-system"
+	defaultNamespace = "default"
 )
 
 type RegisterKind string
@@ -90,7 +91,7 @@ func (s *registry) WithClient(c client.Client) {
 
 func (r *registry) GetRegisterName(organizationName string, deploymentName string) string {
 	if deploymentName == "" {
-		return organizationName
+		return defaultNamespace
 	}
 	return deploymentName
 }
@@ -105,18 +106,8 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 	}
 
 	var registers map[string]string
-	switch len(strings.Split(registerName, ".")) {
-	case 2:
-		dep := &orgv1alpha1.Deployment{}
-		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
-			Name:      registerName,
-		}, dep); err != nil {
-			return nil, err
-		}
-		registers = dep.GetStateRegister()
-
-	case 1:
+	switch namespace {
+	case defaultNamespace:
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
@@ -127,7 +118,14 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 
 		registers = org.GetStateRegister()
 	default:
-		return nil, fmt.Errorf("wrong input in get register %s", registerName)
+		dep := &orgv1alpha1.Deployment{}
+		if err := r.client.Get(ctx, types.NamespacedName{
+			Namespace: namespace,
+			Name:      registerName,
+		}, dep); err != nil {
+			return nil, err
+		}
+		registers = dep.GetStateRegister()
 	}
 	for _, register := range criticalRegisters {
 		if _, ok := registers[register]; !ok {
