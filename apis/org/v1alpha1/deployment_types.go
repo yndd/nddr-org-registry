@@ -80,9 +80,9 @@ type DeploymentStatus struct {
 // +kubebuilder:printcolumn:name="SYNC",type="string",JSONPath=".status.conditions[?(@.kind=='Synced')].status"
 // +kubebuilder:printcolumn:name="STATUS",type="string",JSONPath=".status.conditions[?(@.kind=='Ready')].status"
 // +kubebuilder:printcolumn:name="IPAM",type="string",JSONPath=".status.deployment.register[?(@.kind=='ipam')].name"
-// +kubebuilder:printcolumn:name="NI",type="string",JSONPath=".status.deployment.register[?(@.kind=='network-instance')].name"
+// +kubebuilder:printcolumn:name="NI",type="string",JSONPath=".status.deployment.register[?(@.kind=='ni')].name"
 // +kubebuilder:printcolumn:name="AS",type="string",JSONPath=".status.deployment.register[?(@.kind=='as')].name"
-// +kubebuilder:printcolumn:name="EPG",type="string",JSONPath=".status.deployment.register[?(@.kind=='endpoint-group')].name"
+// +kubebuilder:printcolumn:name="EPG",type="string",JSONPath=".status.deployment.register[?(@.kind=='epg')].name"
 // +kubebuilder:printcolumn:name="VLAN",type="string",JSONPath=".status.deployment.register[?(@.kind=='vlan')].name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 type Deployment struct {

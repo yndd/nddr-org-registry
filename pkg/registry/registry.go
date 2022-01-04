@@ -35,18 +35,19 @@ import (
 )
 
 const (
-	nddNamespace = "ndd-system"
+	nddNamespace     = "ndd-system"
 	defaultNamespace = "default"
 )
 
 type RegisterKind string
 
 const (
-	RegisterKindIpam            RegisterKind = "ipam"
-	RegisterKindAs              RegisterKind = "as"
-	RegisterKindNetworkInstance RegisterKind = "ni"
-	RegisterKindVlan            RegisterKind = "vlan"
-	RegisterKindEndpointGroup   RegisterKind = "epg"
+	RegisterKindIpam RegisterKind = "ipam"
+	RegisterKindAs   RegisterKind = "as"
+	RegisterKindNi   RegisterKind = "ni"
+	RegisterKindVlan RegisterKind = "vlan"
+	RegisterKindEsi  RegisterKind = "esi"
+	RegisterKindRt   RegisterKind = "rt"
 )
 
 func (r RegisterKind) String() string {
@@ -55,12 +56,14 @@ func (r RegisterKind) String() string {
 		return "ipam"
 	case RegisterKindAs:
 		return "as"
-	case RegisterKindNetworkInstance:
+	case RegisterKindNi:
 		return "ni"
 	case RegisterKindVlan:
 		return "vlan"
-	case RegisterKindEndpointGroup:
+	case RegisterKindEsi:
 		return "epg"
+	case RegisterKindRt:
+		return "rt"
 	}
 	return "unknown"
 }
@@ -102,7 +105,7 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 	criticalRegisters := []string{
 		RegisterKindIpam.String(),
 		RegisterKindAs.String(),
-		RegisterKindNetworkInstance.String(),
+		RegisterKindNi.String(),
 	}
 
 	var registers map[string]string
@@ -164,9 +167,9 @@ func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace, 
 
 func (r *registry) GetRegistryClient(ctx context.Context, registerName string) (resourcepb.ResourceClient, error) {
 	registers := map[string]string{
-		RegisterKindIpam.String():            "nddr-ipam",
-		RegisterKindAs.String():              "nddr-aspool",
-		RegisterKindNetworkInstance.String(): "nddr-ni-registry",
+		RegisterKindIpam.String(): "nddr-ipam-registry",
+		RegisterKindAs.String():   "nddr-as-registry",
+		RegisterKindNi.String():   "nddr-ni-registry",
 	}
 
 	if _, ok := registers[registerName]; !ok {

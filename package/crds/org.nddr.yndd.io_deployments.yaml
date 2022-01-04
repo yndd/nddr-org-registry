@@ -1,5 +1,5 @@
 
----
+
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -26,13 +26,13 @@ spec:
     - jsonPath: .status.deployment.register[?(@.kind=='ipam')].name
       name: IPAM
       type: string
-    - jsonPath: .status.deployment.register[?(@.kind=='network-instance')].name
+    - jsonPath: .status.deployment.register[?(@.kind=='ni')].name
       name: NI
       type: string
     - jsonPath: .status.deployment.register[?(@.kind=='as')].name
       name: AS
       type: string
-    - jsonPath: .status.deployment.register[?(@.kind=='endpoint-group')].name
+    - jsonPath: .status.deployment.register[?(@.kind=='epg')].name
       name: EPG
       type: string
     - jsonPath: .status.deployment.register[?(@.kind=='vlan')].name

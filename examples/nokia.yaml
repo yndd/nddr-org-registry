@@ -8,7 +8,7 @@ spec:
     description: default organization for Nokia
     register:
     - {kind: ipam, name: nokia/default}
-    - {kind: network-instance, name: nokia/default}
+    - {kind: ni, name: nokia/default}
     - {kind: as, name: nokia/default}
     - {kind: vlan, name: nokia/default}
       
