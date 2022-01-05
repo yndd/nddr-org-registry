@@ -109,7 +109,8 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 	}
 
 	var registers map[string]string
-	if namespace == defaultNamespace {
+	switch namespace {
+	case defaultNamespace:
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
@@ -119,7 +120,7 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 		}
 
 		registers = org.GetStateRegister()
-	} else {
+	default:
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
@@ -138,18 +139,8 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 }
 
 func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace, registerName string) (*nddov1.AddressAllocationStrategy, error) {
-	switch len(strings.Split(registerName, ".")) {
-	case 2:
-		dep := &orgv1alpha1.Deployment{}
-		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
-			Name:      registerName,
-		}, dep); err != nil {
-			return nil, err
-		}
-		return dep.GetStateAddressAllocationStrategy(), nil
-
-	case 1:
+	switch namespace {
+	case defaultNamespace:
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
@@ -160,7 +151,14 @@ func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace, 
 
 		return org.GetStateAddressAllocationStrategy(), nil
 	default:
-		return nil, fmt.Errorf("wrong input in get register %s", registerName)
+		dep := &orgv1alpha1.Deployment{}
+		if err := r.client.Get(ctx, types.NamespacedName{
+			Namespace: namespace,
+			Name:      registerName,
+		}, dep); err != nil {
+			return nil, err
+		}
+		return dep.GetStateAddressAllocationStrategy(), nil
 	}
 }
 
