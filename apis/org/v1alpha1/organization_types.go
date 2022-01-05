@@ -68,8 +68,9 @@ type OrganizationStatus struct {
 // +kubebuilder:printcolumn:name="IPAM",type="string",JSONPath=".status.organization.register[?(@.kind=='ipam')].name"
 // +kubebuilder:printcolumn:name="NI",type="string",JSONPath=".status.organization.register[?(@.kind=='ni')].name"
 // +kubebuilder:printcolumn:name="AS",type="string",JSONPath=".status.organization.register[?(@.kind=='as')].name"
-// +kubebuilder:printcolumn:name="EPG",type="string",JSONPath=".status.organization.register[?(@.kind=='epg')].name"
+// +kubebuilder:printcolumn:name="ESI",type="string",JSONPath=".status.organization.register[?(@.kind=='esi')].name"
 // +kubebuilder:printcolumn:name="VLAN",type="string",JSONPath=".status.organization.register[?(@.kind=='vlan')].name"
+// +kubebuilder:printcolumn:name="RT",type="string",JSONPath=".status.organization.register[?(@.kind=='rt')].name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
 type Organization struct {
 	metav1.TypeMeta   `json:",inline"`

@@ -109,8 +109,7 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 	}
 
 	var registers map[string]string
-	switch namespace {
-	case defaultNamespace:
+	if namespace == defaultNamespace {
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
@@ -120,7 +119,7 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 		}
 
 		registers = org.GetStateRegister()
-	default:
+	} else {
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,

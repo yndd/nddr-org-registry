@@ -32,11 +32,14 @@ spec:
     - jsonPath: .status.organization.register[?(@.kind=='as')].name
       name: AS
       type: string
-    - jsonPath: .status.organization.register[?(@.kind=='epg')].name
-      name: EPG
+    - jsonPath: .status.organization.register[?(@.kind=='esi')].name
+      name: ESI
       type: string
     - jsonPath: .status.organization.register[?(@.kind=='vlan')].name
       name: VLAN
+      type: string
+    - jsonPath: .status.organization.register[?(@.kind=='rt')].name
+      name: RT
       type: string
     - jsonPath: .metadata.creationTimestamp
       name: AGE
