@@ -44,8 +44,8 @@ func WithClient(c client.Client) Option {
 type Registry interface {
 	WithLogger(logging.Logger)
 	WithClient(client.Client)
-	GetRegisterName(string, string) string
-	GetRegister(context.Context, string, string) (map[string]string, error)
-	GetAddressAllocationStrategy(context.Context, string, string) (*nddov1.AddressAllocationStrategy, error)
+	//GetRegisterName(*nddov1.OdaInfo) []string
+	GetRegister(context.Context, string, *nddov1.OdaInfo) (map[string]string, error)
+	GetAddressAllocationStrategy(context.Context, string, *nddov1.OdaInfo) (*nddov1.AddressAllocationStrategy, error)
 	GetRegistryClient(ctx context.Context, registerName string) (resourcepb.ResourceClient, error)
 }

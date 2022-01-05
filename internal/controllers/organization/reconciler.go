@@ -133,13 +133,13 @@ func (r *application) Timeout(ctx context.Context, mg resource.Managed) time.Dur
 }
 
 func (r *application) Delete(ctx context.Context, mg resource.Managed) (bool, error) {
-	cr, ok := mg.(*orgv1alpha1.Organization)
+	_, ok := mg.(*orgv1alpha1.Organization)
 	if !ok {
 		return true, errors.New(errUnexpectedResource)
 	}
-	if err := r.handler.DeleteOrganizationNamespace(ctx, cr); err != nil {
-		return true, err
-	}
+	//if err := r.handler.DeleteOrganizationNamespace(ctx, cr); err != nil {
+	//	return true, err
+	//}
 	return true, nil
 }
 
@@ -160,9 +160,9 @@ func (r *application) handleAppLogic(ctx context.Context, cr orgv1alpha1.Org) (m
 	crName := getCrName(cr)
 	r.handler.Init(crName)
 
-	if err := r.handler.CreateOrganizationNamespace(ctx, cr); err != nil {
-		return make(map[string]string), err
-	}
+	//if err := r.handler.CreateOrganizationNamespace(ctx, cr); err != nil {
+	//	return make(map[string]string), err
+	//}
 
 	register := cr.GetRegister()
 	for key, registryName := range register {

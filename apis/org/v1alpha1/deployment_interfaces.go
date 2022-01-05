@@ -81,7 +81,7 @@ func (x *Deployment) SetConditions(c ...nddv1.Condition) {
 }
 
 func (x *Deployment) GetOrganizationName() string {
-	return x.GetNamespace()
+	return *x.Spec.OrganizationName
 }
 
 func (x *Deployment) GetDeploymentName() string {

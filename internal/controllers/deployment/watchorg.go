@@ -75,24 +75,21 @@ func (e *EnqueueRequestForAllOrganizations) add(obj runtime.Object, queue adder)
 	log.Debug("handleEvent")
 
 	d := e.newDepList()
-	opts := []client.ListOption{
-		client.InNamespace(dd.GetName()),
-	}
-	if err := e.client.List(e.ctx, d, opts...); err != nil {
+	if err := e.client.List(e.ctx, d); err != nil {
 		return
 	}
 
 	for _, dep := range d.GetDeployments() {
 		// only enqueue if the organization name match
 		log.Debug("handleEvent", "depl namespace", dep.GetNamespace(), "depl name", dep.GetName(), "depl org", dep.GetOrganizationName())
-		//if dep.GetOrganizationName() == dd.GetName() {
+		if dep.GetOrganizationName() == dd.GetName() {
 
-		crName := getCrName(dep)
-		e.handler.ResetSpeedy(crName)
+			crName := getCrName(dep)
+			e.handler.ResetSpeedy(crName)
 
-		queue.Add(reconcile.Request{NamespacedName: types.NamespacedName{
-			Namespace: dep.GetNamespace(),
-			Name:      dep.GetName()}})
-		//}
+			queue.Add(reconcile.Request{NamespacedName: types.NamespacedName{
+				Namespace: dep.GetNamespace(),
+				Name:      dep.GetName()}})
+		}
 	}
 }

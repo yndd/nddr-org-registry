@@ -31,7 +31,6 @@ import (
 	"github.com/yndd/nddr-org-registry/internal/handler"
 	"github.com/yndd/nddr-org-registry/internal/shared"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
@@ -149,13 +148,13 @@ func (r *application) Timeout(ctx context.Context, mg resource.Managed) time.Dur
 }
 
 func (r *application) Delete(ctx context.Context, mg resource.Managed) (bool, error) {
-	cr, ok := mg.(*orgv1alpha1.Deployment)
+	_, ok := mg.(*orgv1alpha1.Deployment)
 	if !ok {
 		return true, errors.New(errUnexpectedResource)
 	}
-	if err := r.handler.DeleteDeploymentNamespace(ctx, cr); err != nil {
-		return true, err
-	}
+	//if err := r.handler.DeleteDeploymentNamespace(ctx, cr); err != nil {
+	//	return true, err
+	//}
 	return true, nil
 }
 
@@ -177,10 +176,7 @@ func (r *application) handleAppLogic(ctx context.Context, cr orgv1alpha1.Dp) (ma
 	r.handler.Init(crName)
 
 	orgs := r.newOrgList()
-	opts := []client.ListOption{
-		client.InNamespace("default"),
-	}
-	if err := r.client.List(ctx, orgs, opts...); err != nil {
+	if err := r.client.List(ctx, orgs); err != nil {
 		return nil, err
 	}
 
@@ -189,7 +185,7 @@ func (r *application) handleAppLogic(ctx context.Context, cr orgv1alpha1.Dp) (ma
 	var orgAddressAllocationStrategy *nddov1.AddressAllocationStrategy
 	for _, org := range orgs.GetOrganizations() {
 		log.Debug("org matches", "orgname", org.GetName(), "depNamespace", cr.GetNamespace())
-		if org.GetName() == cr.GetNamespace() {
+		if org.GetName() == cr.GetOrganizationName() {
 			orgfound = true
 			orgRegister = org.GetRegister()
 			orgAddressAllocationStrategy = org.GetAddressAllocationStrategy()
@@ -203,9 +199,9 @@ func (r *application) handleAppLogic(ctx context.Context, cr orgv1alpha1.Dp) (ma
 		return nil, errors.New("organization not found")
 	}
 
-	if err := r.handler.CreateDeploymentNamespace(ctx, cr); err != nil {
-		return make(map[string]string), err
-	}
+	//if err := r.handler.CreateDeploymentNamespace(ctx, cr); err != nil {
+	//	return make(map[string]string), err
+	//}
 
 	if cr.GetAdminState() == "disable" {
 		cr.SetStatus("down")

@@ -25,13 +25,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-const (
-	// DeploymentFinalizer is the name of the finalizer added to
-	// Deployment to block delete operations until the physical node can be
-	// deprovisioned.
-	DeploymentFinalizer string = "Deployment.org.nddr.yndd.io"
-)
-
 type NddrOrgDeployment struct {
 	Register                  []*nddov1.Register                `json:"register,omitempty"`
 	AddressAllocationStrategy *nddov1.AddressAllocationStrategy `json:"address-allocation-strategy,omitempty"`
@@ -64,7 +57,8 @@ type OrgDeployment struct {
 // A DeploymentSpec defines the desired state of a Deployment.
 type DeploymentSpec struct {
 	//nddv1.ResourceSpec `json:",inline"`
-	Deployment *OrgDeployment `json:"deployment,omitempty"`
+	OrganizationName *string        `json:"organization-name"`
+	Deployment       *OrgDeployment `json:"deployment,omitempty"`
 }
 
 // A DeploymentStatus represents the observed state of a Deployment.

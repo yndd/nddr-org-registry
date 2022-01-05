@@ -2,8 +2,9 @@ apiVersion: org.nddr.yndd.io/v1alpha1
 kind: Deployment
 metadata:
   name: region1
-  namespace: nokia
+  namespace: default
 spec:
+  organization-name: nokia
   deployment:
     region: antwerp
     kind: dc

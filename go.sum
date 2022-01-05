@@ -1320,10 +1320,11 @@ github.com/yndd/ndd-runtime v0.1.6/go.mod h1:Y07uIZQgSqz5h3UeAYp24JyDjugH0T/zeAC
 github.com/yndd/ndd-yang v0.1.62/go.mod h1:GT/8efIchBH1sQ6J64AM1FZDXXIaWeirkYUpbmDPlHI=
 github.com/yndd/ndd-yang v0.1.276/go.mod h1:vcKhP5OU3oJHSEILaE0HEgZKxftcu2GFOGdS6w0TauM=
 github.com/yndd/ndda-network v0.0.6/go.mod h1:xTLmLhhuUvMwQ5wcRvVCsymcq9PDK98RoXDf+X3rC2I=
-github.com/yndd/nddo-grpc v0.0.11 h1:P6ogq7I0z5gpSg3RqUHhs3oWJGvPMhE+69t7evB+78E=
 github.com/yndd/nddo-grpc v0.0.11/go.mod h1:EtOPd2XxbxDMLMNheomiDZBQCCtY0DRdOer3MOEsgH0=
-github.com/yndd/nddo-runtime v0.0.37 h1:AidqwcBl8UTtbkaKvoRwmneJxsSxgCBCzS14/VODl5s=
-github.com/yndd/nddo-runtime v0.0.37/go.mod h1:kuq62NH3WPNOQSwslitG0gFAGEwywcmaC9bQQ2cOm0o=
+github.com/yndd/nddo-grpc v0.0.16 h1:UkZRN4T2LUx16N0qI+u2QEqDZyx3DHF+bsJS1cKMSv8=
+github.com/yndd/nddo-grpc v0.0.16/go.mod h1:EtOPd2XxbxDMLMNheomiDZBQCCtY0DRdOer3MOEsgH0=
+github.com/yndd/nddo-runtime v0.0.47 h1:8MCYtdcizSu8PdeldActFKsSJEkzEYW5zr4l7bj7J2E=
+github.com/yndd/nddo-runtime v0.0.47/go.mod h1:kuq62NH3WPNOQSwslitG0gFAGEwywcmaC9bQQ2cOm0o=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

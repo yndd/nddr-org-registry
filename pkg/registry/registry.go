@@ -92,14 +92,20 @@ func (s *registry) WithClient(c client.Client) {
 	s.client = c
 }
 
-func (r *registry) GetRegisterName(organizationName string, deploymentName string) string {
+/*
+func (r *registry) GetRegisterName(organizationName string, deploymentName string) []string {
+	registerName := make([]string, 0)
 	if deploymentName == "" {
-		return defaultNamespace
-	}
-	return deploymentName
-}
+		registerName = append(registerName, organizationName)
 
-func (r *registry) GetRegister(ctx context.Context, namespace, registerName string) (map[string]string, error) {
+	}
+	registerName = append(registerName, organizationName)
+	registerName = append(registerName, deploymentName)
+	return registerName
+}
+*/
+
+func (r *registry) GetRegister(ctx context.Context, namespace string, oda *nddov1.OdaInfo) (map[string]string, error) {
 	// critical registers are ipam and as right now since they server dynamic
 	// grpc services
 	criticalRegisters := []string{
@@ -109,26 +115,26 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 	}
 
 	var registers map[string]string
-	switch namespace {
-	case defaultNamespace:
-		org := &orgv1alpha1.Organization{}
-		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
-			Name:      registerName,
-		}, org); err != nil {
-			return nil, err
-		}
-
-		registers = org.GetStateRegister()
-	default:
+	switch {
+	case oda.GetDeployment() != "":
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      registerName,
+			Name:      oda.GetDeployment(),
 		}, dep); err != nil {
 			return nil, err
 		}
+
 		registers = dep.GetStateRegister()
+	default:
+		org := &orgv1alpha1.Organization{}
+		if err := r.client.Get(ctx, types.NamespacedName{
+			Namespace: namespace,
+			Name:      oda.GetOrganization(),
+		}, org); err != nil {
+			return nil, err
+		}
+		registers = org.GetStateRegister()
 	}
 	for _, register := range criticalRegisters {
 		if _, ok := registers[register]; !ok {
@@ -138,27 +144,27 @@ func (r *registry) GetRegister(ctx context.Context, namespace, registerName stri
 	return registers, nil
 }
 
-func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace, registerName string) (*nddov1.AddressAllocationStrategy, error) {
-	switch namespace {
-	case defaultNamespace:
-		org := &orgv1alpha1.Organization{}
-		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
-			Name:      registerName,
-		}, org); err != nil {
-			return nil, err
-		}
-
-		return org.GetStateAddressAllocationStrategy(), nil
-	default:
+func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace string, oda *nddov1.OdaInfo) (*nddov1.AddressAllocationStrategy, error) {
+	switch {
+	case oda.GetDeployment() != "":
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      registerName,
+			Name:      oda.GetDeployment(),
 		}, dep); err != nil {
 			return nil, err
 		}
 		return dep.GetStateAddressAllocationStrategy(), nil
+
+	default:
+		org := &orgv1alpha1.Organization{}
+		if err := r.client.Get(ctx, types.NamespacedName{
+			Namespace: namespace,
+			Name:      oda.GetOrganization(),
+		}, org); err != nil {
+			return nil, err
+		}
+		return org.GetStateAddressAllocationStrategy(), nil
 	}
 }
 
