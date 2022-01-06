@@ -28,6 +28,7 @@ import (
 	rclient "github.com/yndd/nddo-grpc/resource/client"
 	"github.com/yndd/nddo-grpc/resource/resourcepb"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
+	"github.com/yndd/nddo-runtime/pkg/odns"
 	orgv1alpha1 "github.com/yndd/nddr-org-registry/apis/org/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -105,7 +106,7 @@ func (r *registry) GetRegisterName(organizationName string, deploymentName strin
 }
 */
 
-func (r *registry) GetRegister(ctx context.Context, namespace string, oda *nddov1.OdaInfo) (map[string]string, error) {
+func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns.Odns) (map[string]string, error) {
 	// critical registers are ipam and as right now since they server dynamic
 	// grpc services
 	criticalRegisters := []string{
@@ -116,11 +117,11 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, oda *nddov
 
 	var registers map[string]string
 	switch {
-	case oda.GetDeployment() != "":
+	case odns.GetDeployment() != "":
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      oda.GetDeployment(),
+			Name:      odns.GetDeployment(),
 		}, dep); err != nil {
 			return nil, err
 		}
@@ -130,7 +131,7 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, oda *nddov
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      oda.GetOrganization(),
+			Name:      odns.GetOrganization(),
 		}, org); err != nil {
 			return nil, err
 		}

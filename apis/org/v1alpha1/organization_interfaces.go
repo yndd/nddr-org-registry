@@ -23,6 +23,7 @@ import (
 	"github.com/yndd/ndd-runtime/pkg/resource"
 	"github.com/yndd/ndd-runtime/pkg/utils"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
+	"github.com/yndd/nddo-runtime/pkg/odns"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -77,7 +78,7 @@ func (x *Organization) SetConditions(c ...nddv1.Condition) {
 }
 
 func (x *Organization) GetOrganizationName() string {
-	return x.GetName()
+	return odns.Name2Odns(x.GetName()).GetOrganization()
 }
 
 func (x *Organization) GetDescription() string {

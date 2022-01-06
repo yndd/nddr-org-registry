@@ -57,8 +57,7 @@ type OrgDeployment struct {
 // A DeploymentSpec defines the desired state of a Deployment.
 type DeploymentSpec struct {
 	//nddv1.ResourceSpec `json:",inline"`
-	OrganizationName *string        `json:"organization-name"`
-	Deployment       *OrgDeployment `json:"deployment,omitempty"`
+	Deployment *OrgDeployment `json:"deployment,omitempty"`
 }
 
 // A DeploymentStatus represents the observed state of a Deployment.

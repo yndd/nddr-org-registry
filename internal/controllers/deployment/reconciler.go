@@ -185,7 +185,7 @@ func (r *application) handleAppLogic(ctx context.Context, cr orgv1alpha1.Dp) (ma
 	var orgAddressAllocationStrategy *nddov1.AddressAllocationStrategy
 	for _, org := range orgs.GetOrganizations() {
 		log.Debug("org matches", "orgname", org.GetName(), "depNamespace", cr.GetNamespace())
-		if org.GetName() == cr.GetOrganizationName() {
+		if org.GetOrganizationName() == cr.GetOrganizationName() {
 			orgfound = true
 			orgRegister = org.GetRegister()
 			orgAddressAllocationStrategy = org.GetAddressAllocationStrategy()

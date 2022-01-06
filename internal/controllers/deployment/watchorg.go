@@ -82,7 +82,7 @@ func (e *EnqueueRequestForAllOrganizations) add(obj runtime.Object, queue adder)
 	for _, dep := range d.GetDeployments() {
 		// only enqueue if the organization name match
 		log.Debug("handleEvent", "depl namespace", dep.GetNamespace(), "depl name", dep.GetName(), "depl org", dep.GetOrganizationName())
-		if dep.GetOrganizationName() == dd.GetName() {
+		if dep.GetOrganizationName() == dd.GetOrganizationName() {
 
 			crName := getCrName(dep)
 			e.handler.ResetSpeedy(crName)
