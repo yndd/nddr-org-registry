@@ -115,13 +115,15 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns
 		RegisterKindNi.String(),
 	}
 
+	fullOdaName, odaKind := odns.GetFullOdaName()
+
 	var registers map[string]string
-	switch {
-	case odns.GetDeployment() != "":
+	switch odaKind {
+	case nddov1.OdaKindDeployment:
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      odns.GetDeployment(),
+			Name:      fullOdaName,
 		}, dep); err != nil {
 			return nil, err
 		}
@@ -131,7 +133,7 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      odns.GetOrganization(),
+			Name:      fullOdaName,
 		}, org); err != nil {
 			return nil, err
 		}
