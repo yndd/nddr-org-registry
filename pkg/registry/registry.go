@@ -147,13 +147,16 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns
 	return registers, nil
 }
 
-func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace string, oda *nddov1.OdaInfo) (*nddov1.AddressAllocationStrategy, error) {
-	switch {
-	case oda.GetDeployment() != "":
+func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace string, odns *odns.Odns) (*nddov1.AddressAllocationStrategy, error) {
+	
+	fullOdaName, odaKind := odns.GetFullOdaName()
+	
+	switch odaKind {
+	case nddov1.OdaKindDeployment:
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      oda.GetDeployment(),
+			Name:      fullOdaName,
 		}, dep); err != nil {
 			return nil, err
 		}
@@ -163,7 +166,7 @@ func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace s
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: namespace,
-			Name:      oda.GetOrganization(),
+			Name:      fullOdaName,
 		}, org); err != nil {
 			return nil, err
 		}

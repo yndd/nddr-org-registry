@@ -47,6 +47,6 @@ type Registry interface {
 	WithClient(client.Client)
 	//GetRegisterName(*nddov1.OdaInfo) []string
 	GetRegister(context.Context, string, *odns.Odns) (map[string]string, error)
-	GetAddressAllocationStrategy(context.Context, string, *nddov1.OdaInfo) (*nddov1.AddressAllocationStrategy, error)
+	GetAddressAllocationStrategy(context.Context, string, *odns.Odns) (*nddov1.AddressAllocationStrategy, error)
 	GetRegistryClient(ctx context.Context, registerName string) (resourcepb.ResourceClient, error)
 }
