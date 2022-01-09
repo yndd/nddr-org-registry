@@ -107,7 +107,7 @@ func (r *registry) GetRegisterName(organizationName string, deploymentName strin
 }
 */
 
-func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns.Odns) (map[string]string, error) {
+func (r *registry) GetRegister(ctx context.Context, mg resource.Managed) (map[string]string, error) {
 	// critical registers are ipam and as right now since they server dynamic
 	// grpc services
 	criticalRegisters := []string{
@@ -116,14 +116,15 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns
 		RegisterKindNi.String(),
 	}
 
-	fullOdaName, odaKind := odns.GetFullOdaName()
+	o := odns.Name2OdnsResource(mg.GetName()).GetOdns()
+	fullOdaName, odaKind := o.GetFullOdaName()
 
 	var registers map[string]string
 	switch odaKind {
 	case nddov1.OdaKindDeployment:
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
+			Namespace: mg.GetNamespace(),
 			Name:      fullOdaName,
 		}, dep); err != nil {
 			return nil, err
@@ -133,7 +134,7 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns
 	default:
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
+			Namespace: mg.GetNamespace(),
 			Name:      fullOdaName,
 		}, org); err != nil {
 			return nil, err

@@ -22,7 +22,6 @@ import (
 	"github.com/yndd/ndd-runtime/pkg/logging"
 	"github.com/yndd/nddo-grpc/resource/resourcepb"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
-	"github.com/yndd/nddo-runtime/pkg/odns"
 	"github.com/yndd/nddo-runtime/pkg/resource"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -47,7 +46,7 @@ type Registry interface {
 	WithLogger(logging.Logger)
 	WithClient(client.Client)
 	//GetRegisterName(*nddov1.OdaInfo) []string
-	GetRegister(context.Context, string, *odns.Odns) (map[string]string, error)
+	GetRegister(context.Context, resource.Managed) (map[string]string, error)
 	GetAddressAllocationStrategy(context.Context, resource.Managed) (*nddov1.AddressAllocationStrategy, error)
 	GetRegistryClient(ctx context.Context, registerName string) (resourcepb.ResourceClient, error)
 }
