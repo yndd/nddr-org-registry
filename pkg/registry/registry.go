@@ -29,6 +29,7 @@ import (
 	"github.com/yndd/nddo-grpc/resource/resourcepb"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
 	"github.com/yndd/nddo-runtime/pkg/odns"
+	"github.com/yndd/nddo-runtime/pkg/resource"
 	orgv1alpha1 "github.com/yndd/nddr-org-registry/apis/org/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -147,15 +148,16 @@ func (r *registry) GetRegister(ctx context.Context, namespace string, odns *odns
 	return registers, nil
 }
 
-func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace string, odns *odns.Odns) (*nddov1.AddressAllocationStrategy, error) {
-	
-	fullOdaName, odaKind := odns.GetFullOdaName()
-	
+func (r *registry) GetAddressAllocationStrategy(ctx context.Context, mg resource.Managed) (*nddov1.AddressAllocationStrategy, error) {
+
+	o := odns.Name2OdnsResource(mg.GetName()).GetOdns()
+	fullOdaName, odaKind := o.GetFullOdaName()
+
 	switch odaKind {
 	case nddov1.OdaKindDeployment:
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
+			Namespace: mg.GetNamespace(),
 			Name:      fullOdaName,
 		}, dep); err != nil {
 			return nil, err
@@ -165,7 +167,7 @@ func (r *registry) GetAddressAllocationStrategy(ctx context.Context, namespace s
 	default:
 		org := &orgv1alpha1.Organization{}
 		if err := r.client.Get(ctx, types.NamespacedName{
-			Namespace: namespace,
+			Namespace: mg.GetNamespace(),
 			Name:      fullOdaName,
 		}, org); err != nil {
 			return nil, err
