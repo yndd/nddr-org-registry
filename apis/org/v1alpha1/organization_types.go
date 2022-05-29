@@ -37,7 +37,7 @@ type NddrOrganizationState struct {
 }
 
 // Organization struct
-type OrgOrganization struct {
+type OrganizationProperties struct {
 	// kubebuilder:validation:MinLength=1
 	// kubebuilder:validation:MaxLength=255
 	// +kubebuilder:validation:Required
@@ -49,14 +49,15 @@ type OrgOrganization struct {
 
 // A OrganizationSpec defines the desired state of a Organization.
 type OrganizationSpec struct {
-	//nddv1.ResourceSpec `json:",inline"`
-	Organization *OrgOrganization `json:"organization,omitempty"`
+	nddv1.ResourceSpec `json:",inline"`
+	// Properties define the properties of the TopologyDefinition
+	Properties OrganizationProperties `json:"properties,omitempty"`
 }
 
 // A OrganizationStatus represents the observed state of a Organization.
 type OrganizationStatus struct {
-	nddv1.ConditionedStatus `json:",inline"`
-	Organization            *NddrOrganization `json:"organization,omitempty"`
+	nddv1.ResourceStatus `json:",inline"`
+	Organization         *NddrOrganization `json:"organization,omitempty"`
 }
 
 // +kubebuilder:object:root=true

@@ -22,11 +22,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/yndd/app-runtime/pkg/reconciler/managed"
 	"github.com/yndd/ndd-runtime/pkg/event"
 	"github.com/yndd/ndd-runtime/pkg/logging"
+	"github.com/yndd/ndd-runtime/pkg/resource"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
-	"github.com/yndd/nddo-runtime/pkg/reconciler/managed"
-	"github.com/yndd/nddo-runtime/pkg/resource"
 	orgv1alpha1 "github.com/yndd/nddr-org-registry/apis/org/v1alpha1"
 	"github.com/yndd/nddr-org-registry/internal/handler"
 	"github.com/yndd/nddr-org-registry/internal/shared"
@@ -55,7 +55,7 @@ func Setup(mgr ctrl.Manager, o controller.Options, nddcopts *shared.NddControlle
 	r := managed.NewReconciler(mgr,
 		resource.ManagedKind(orgv1alpha1.DeploymentGroupVersionKind),
 		managed.WithLogger(nddcopts.Logger.WithValues("controller", name)),
-		managed.WithApplication(&application{
+		managed.WithApplogic(&application{
 			client: resource.ClientApplicator{
 				Client:     mgr.GetClient(),
 				Applicator: resource.NewAPIPatchingApplicator(mgr.GetClient()),

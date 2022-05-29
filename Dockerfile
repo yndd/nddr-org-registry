@@ -27,7 +27,7 @@ RUN apk add --update && \
     apk add bonding && \
     rm -rf /tmp/*/var/cache/apk/*
 
-RUN curl -sL https://github.com/karimra/gnmic/raw/master/install.sh | sh
+RUN curl -sL https://get-gnmic.kmrd.dev | sh
 WORKDIR /
 COPY --from=builder /workspace/manager .
 USER 65532:65532

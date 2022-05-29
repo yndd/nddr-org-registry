@@ -52,6 +52,22 @@ type Org interface {
 	resource.Object
 	resource.Conditioned
 
+	GetCondition(ct nddv1.ConditionKind) nddv1.Condition
+	SetConditions(c ...nddv1.Condition)
+
+	SetHealthConditions(c nddv1.HealthConditionedStatus)
+
+	GetDeletionPolicy() nddv1.DeletionPolicy
+	SetDeletionPolicy(p nddv1.DeletionPolicy)
+	GetDeploymentPolicy() nddv1.DeploymentPolicy
+	SetDeploymentPolicy(p nddv1.DeploymentPolicy)
+
+	GetTargetReference() *nddv1.Reference
+	SetTargetReference(p *nddv1.Reference)
+
+	GetRootPaths() []string
+	SetRootPaths(rootPaths []string)
+
 	GetOrganizationName() string
 	GetDescription() string
 	GetRegister() map[string]string
@@ -77,23 +93,59 @@ func (x *Organization) SetConditions(c ...nddv1.Condition) {
 	x.Status.SetConditions(c...)
 }
 
+func (x *Organization) SetHealthConditions(c nddv1.HealthConditionedStatus) {
+	x.Status.Health = c
+}
+
+func (x *Organization) GetDeletionPolicy() nddv1.DeletionPolicy {
+	return x.Spec.Lifecycle.DeletionPolicy
+}
+
+func (x *Organization) SetDeletionPolicy(c nddv1.DeletionPolicy) {
+	x.Spec.Lifecycle.DeletionPolicy = c
+}
+
+func (x *Organization) GetDeploymentPolicy() nddv1.DeploymentPolicy {
+	return x.Spec.Lifecycle.DeploymentPolicy
+}
+
+func (x *Organization) SetDeploymentPolicy(c nddv1.DeploymentPolicy) {
+	x.Spec.Lifecycle.DeploymentPolicy = c
+}
+
+func (x *Organization) GetTargetReference() *nddv1.Reference {
+	return x.Spec.TargetReference
+}
+
+func (x *Organization) SetTargetReference(p *nddv1.Reference) {
+	x.Spec.TargetReference = p
+}
+
+func (x *Organization) GetRootPaths() []string {
+	return x.Status.RootPaths
+}
+
+func (x *Organization) SetRootPaths(rootPaths []string) {
+	x.Status.RootPaths = rootPaths
+}
+
 func (x *Organization) GetOrganizationName() string {
 	return odns.Name2Odns(x.GetName()).GetOrganization()
 }
 
 func (x *Organization) GetDescription() string {
-	if reflect.ValueOf(x.Spec.Organization.Description).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.Description).IsZero() {
 		return ""
 	}
-	return *x.Spec.Organization.Description
+	return *x.Spec.Properties.Description
 }
 
 func (x *Organization) GetRegister() map[string]string {
 	s := make(map[string]string)
-	if reflect.ValueOf(x.Spec.Organization.Register).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.Register).IsZero() {
 		return s
 	}
-	for _, register := range x.Spec.Organization.Register {
+	for _, register := range x.Spec.Properties.Register {
 		for kind, name := range register.GetRegister() {
 			s[kind] = name
 		}
@@ -102,10 +154,10 @@ func (x *Organization) GetRegister() map[string]string {
 }
 
 func (x *Organization) GetAddressAllocationStrategy() *nddov1.AddressAllocationStrategy {
-	if reflect.ValueOf(x.Spec.Organization.AddressAllocationStrategy).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.AddressAllocationStrategy).IsZero() {
 		return &nddov1.AddressAllocationStrategy{}
 	}
-	return x.Spec.Organization.AddressAllocationStrategy
+	return x.Spec.Properties.AddressAllocationStrategy
 }
 
 func (x *Organization) InitializeResource() error {

@@ -37,7 +37,7 @@ type NddrOrgDeploymentState struct {
 }
 
 // Deployment struct
-type OrgDeployment struct {
+type DeploymentProperties struct {
 	// +kubebuilder:validation:Enum=`disable`;`enable`
 	// +kubebuilder:default:="enable"
 	AdminState *string `json:"admin-state,omitempty"`
@@ -56,14 +56,15 @@ type OrgDeployment struct {
 
 // A DeploymentSpec defines the desired state of a Deployment.
 type DeploymentSpec struct {
-	//nddv1.ResourceSpec `json:",inline"`
-	Deployment *OrgDeployment `json:"deployment,omitempty"`
+	nddv1.ResourceSpec `json:",inline"`
+	// Properties define the properties of the TopologyDefinition
+	Properties DeploymentProperties `json:"properties,omitempty"`
 }
 
 // A DeploymentStatus represents the observed state of a Deployment.
 type DeploymentStatus struct {
-	nddv1.ConditionedStatus `json:",inline"`
-	Deployment              *NddrOrgDeployment `json:"deployment,omitempty"`
+	nddv1.ResourceStatus `json:",inline"`
+	Deployment           *NddrOrgDeployment `json:"deployment,omitempty"`
 }
 
 // +kubebuilder:object:root=true

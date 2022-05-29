@@ -19,11 +19,11 @@ package v1alpha1
 import (
 	"reflect"
 
+	"github.com/yndd/app-runtime/pkg/odns"
 	nddv1 "github.com/yndd/ndd-runtime/apis/common/v1"
 	"github.com/yndd/ndd-runtime/pkg/resource"
 	"github.com/yndd/ndd-runtime/pkg/utils"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
-	"github.com/yndd/nddo-runtime/pkg/odns"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -51,6 +51,22 @@ var _ Dp = &Deployment{}
 type Dp interface {
 	resource.Object
 	resource.Conditioned
+
+	GetCondition(ct nddv1.ConditionKind) nddv1.Condition
+	SetConditions(c ...nddv1.Condition)
+
+	SetHealthConditions(c nddv1.HealthConditionedStatus)
+
+	GetDeletionPolicy() nddv1.DeletionPolicy
+	SetDeletionPolicy(p nddv1.DeletionPolicy)
+	GetDeploymentPolicy() nddv1.DeploymentPolicy
+	SetDeploymentPolicy(p nddv1.DeploymentPolicy)
+
+	GetTargetReference() *nddv1.Reference
+	SetTargetReference(p *nddv1.Reference)
+
+	GetRootPaths() []string
+	SetRootPaths(rootPaths []string)
 
 	GetOrganizationName() string
 	GetDeploymentName() string
@@ -81,6 +97,42 @@ func (x *Deployment) SetConditions(c ...nddv1.Condition) {
 	x.Status.SetConditions(c...)
 }
 
+func (x *Deployment) SetHealthConditions(c nddv1.HealthConditionedStatus) {
+	x.Status.Health = c
+}
+
+func (x *Deployment) GetDeletionPolicy() nddv1.DeletionPolicy {
+	return x.Spec.Lifecycle.DeletionPolicy
+}
+
+func (x *Deployment) SetDeletionPolicy(c nddv1.DeletionPolicy) {
+	x.Spec.Lifecycle.DeletionPolicy = c
+}
+
+func (x *Deployment) GetDeploymentPolicy() nddv1.DeploymentPolicy {
+	return x.Spec.Lifecycle.DeploymentPolicy
+}
+
+func (x *Deployment) SetDeploymentPolicy(c nddv1.DeploymentPolicy) {
+	x.Spec.Lifecycle.DeploymentPolicy = c
+}
+
+func (x *Deployment) GetTargetReference() *nddv1.Reference {
+	return x.Spec.TargetReference
+}
+
+func (x *Deployment) SetTargetReference(p *nddv1.Reference) {
+	x.Spec.TargetReference = p
+}
+
+func (x *Deployment) GetRootPaths() []string {
+	return x.Status.RootPaths
+}
+
+func (x *Deployment) SetRootPaths(rootPaths []string) {
+	x.Status.RootPaths = rootPaths
+}
+
 func (x *Deployment) GetOrganizationName() string {
 	return odns.Name2Odns(x.GetName()).GetOrganization()
 }
@@ -90,39 +142,39 @@ func (x *Deployment) GetDeploymentName() string {
 }
 
 func (x *Deployment) GetAdminState() string {
-	if reflect.ValueOf(x.Spec.Deployment.AdminState).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.AdminState).IsZero() {
 		return ""
 	}
-	return *x.Spec.Deployment.AdminState
+	return *x.Spec.Properties.AdminState
 }
 
 func (x *Deployment) GetDescription() string {
-	if reflect.ValueOf(x.Spec.Deployment.Description).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.Description).IsZero() {
 		return ""
 	}
-	return *x.Spec.Deployment.Description
+	return *x.Spec.Properties.Description
 }
 
 func (x *Deployment) GetKind() string {
-	if reflect.ValueOf(x.Spec.Deployment.Kind).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.Kind).IsZero() {
 		return ""
 	}
-	return *x.Spec.Deployment.Kind
+	return *x.Spec.Properties.Kind
 }
 
 func (x *Deployment) GetRegion() string {
-	if reflect.ValueOf(x.Spec.Deployment.Region).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.Region).IsZero() {
 		return ""
 	}
-	return *x.Spec.Deployment.Region
+	return *x.Spec.Properties.Region
 }
 
 func (x *Deployment) GetRegister() map[string]string {
 	s := make(map[string]string)
-	if reflect.ValueOf(x.Spec.Deployment.Register).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.Register).IsZero() {
 		return s
 	}
-	for _, register := range x.Spec.Deployment.Register {
+	for _, register := range x.Spec.Properties.Register {
 		for kind, name := range register.GetRegister() {
 			s[kind] = name
 		}
@@ -131,10 +183,10 @@ func (x *Deployment) GetRegister() map[string]string {
 }
 
 func (x *Deployment) GetAddressAllocationStrategy() *nddov1.AddressAllocationStrategy {
-	if reflect.ValueOf(x.Spec.Deployment.AddressAllocationStrategy).IsZero() {
+	if reflect.ValueOf(x.Spec.Properties.AddressAllocationStrategy).IsZero() {
 		return &nddov1.AddressAllocationStrategy{}
 	}
-	return x.Spec.Deployment.AddressAllocationStrategy
+	return x.Spec.Properties.AddressAllocationStrategy
 }
 
 func (x *Deployment) InitializeResource() error {

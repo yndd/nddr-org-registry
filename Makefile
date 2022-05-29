@@ -52,11 +52,17 @@ help: ## Display this help.
 
 ##@ Development
 
-generate: controller-gen ndd-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
-	rm -rf package/crds/
-	$(CONTROLLER_GEN) $(CRD_OPTIONS) webhook paths="./..." output:crd:artifacts:config=package/crds
+.PHONY: manifests
+manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
+	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	if [ ! -d "package/crds" ]; then mkdir -p package/crds; fi
+	rm -rf package/crds/*
+	$(CONTROLLER_GEN) crd webhook paths="./..." output:crd:artifacts:config=package/crds
+
+.PHONY: generate
+generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
-	cd apis;$(NDD_GEN) generate-methodsets --header-file=../"hack/boilerplate.go.txt" --paths="./..."; cd ..
+	##cd apis;$(NDD_GEN) generate-methodsets --header-file=../"hack/boilerplate.go.txt" --paths="./..."; cd ..
 
 fmt: ## Run go fmt against code.
 	go fmt ./...
@@ -92,11 +98,41 @@ package-push: ## build ndd package.
 	cd package;kubectl ndd package push ${PKG};cd ..
 
 
-CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
-controller-gen: ## Download controller-gen locally if necessary.
-	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1)
+##@ Build Dependencies
 
-NDD_GEN = $(shell pwd)/bin/ndd-gen
-ndd-gen: ## Download ndd-gen locally if necessary.
-	$(call go-get-tool,$(NDD_GEN),github.com/yndd/ndd-tools/cmd/ndd-gen@v0.1.13)
+## Location to install dependencies to
+LOCALBIN ?= $(shell pwd)/bin
+$(LOCALBIN):
+	mkdir -p $(LOCALBIN)
 
+## Tool Binaries
+KUSTOMIZE ?= $(LOCALBIN)/kustomize
+CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
+ENVTEST ?= $(LOCALBIN)/setup-envtest
+KUBECTL_NDD ?= $(LOCALBIN)/kubectl-ndd
+
+## Tool Versions
+KUSTOMIZE_VERSION ?= v3.8.7
+CONTROLLER_TOOLS_VERSION ?= v0.8.0
+KUBECTL_NDD_VERSION ?= v0.2.20
+
+KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
+.PHONY: kustomize
+kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
+$(KUSTOMIZE): $(LOCALBIN)
+	curl -s $(KUSTOMIZE_INSTALL_SCRIPT) | bash -s -- $(subst v,,$(KUSTOMIZE_VERSION)) $(LOCALBIN)
+
+.PHONY: controller-gen
+controller-gen: $(CONTROLLER_GEN) ## Download controller-gen locally if necessary.
+$(CONTROLLER_GEN): $(LOCALBIN)
+	GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-tools/cmd/controller-gen@$(CONTROLLER_TOOLS_VERSION)
+
+.PHONY: envtest
+envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
+$(ENVTEST): $(LOCALBIN)
+	GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
+
+.PHONY: kubectl-ndd
+kubectl-ndd: $(KUBECTL_NDD) ## Download kubectl-ndd locally if necessary.
+$(KUBECTL_NDD): $(LOCALBIN)
+	GOBIN=$(LOCALBIN) go install github.com/yndd/ndd-core/cmd/kubectl-ndd@$(KUBECTL_NDD_VERSION)  ;\
