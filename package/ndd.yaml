@@ -1,7 +1,7 @@
 apiVersion: meta.pkg.ndd.yndd.io/v1
 kind: Provider
 metadata:
-  name: org-provider
+  name: organization-provider
   namespace: ndd-system
 spec:
   pod:
@@ -22,7 +22,7 @@ spec:
           name: https
     - container:
         name: controller
-        image: yndd/nddr-org-registry-controller:latest
+        image: yndd/organization-provider-controller:latest
       extras:
       - {name: metrics, service: true, port: 8443, target-port: 443}
       - {name: profiler, volume: true}
