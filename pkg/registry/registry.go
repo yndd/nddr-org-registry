@@ -28,8 +28,9 @@ import (
 	rclient "github.com/yndd/nddo-grpc/resource/client"
 	"github.com/yndd/nddo-grpc/resource/resourcepb"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
-	"github.com/yndd/nddo-runtime/pkg/odns"
-	"github.com/yndd/nddo-runtime/pkg/resource"
+	nddv1 "github.com/yndd/ndd-runtime/apis/common/v1"
+	"github.com/yndd/app-runtime/pkg/odns"
+	"github.com/yndd/ndd-runtime/pkg/resource"
 	orgv1alpha1 "github.com/yndd/nddr-org-registry/apis/org/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -121,7 +122,7 @@ func (r *registry) GetRegister(ctx context.Context, mg resource.Managed) (map[st
 
 	var registers map[string]string
 	switch odaKind {
-	case nddov1.OdaKindDeployment:
+	case nddv1.OdaKindDeployment:
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: mg.GetNamespace(),
@@ -155,7 +156,7 @@ func (r *registry) GetAddressAllocationStrategy(ctx context.Context, mg resource
 	fullOdaName, odaKind := o.GetFullOdaName()
 
 	switch odaKind {
-	case nddov1.OdaKindDeployment:
+	case nddv1.OdaKindDeployment:
 		dep := &orgv1alpha1.Deployment{}
 		if err := r.client.Get(ctx, types.NamespacedName{
 			Namespace: mg.GetNamespace(),

@@ -23,7 +23,7 @@ import (
 	"github.com/yndd/ndd-runtime/pkg/resource"
 	"github.com/yndd/ndd-runtime/pkg/utils"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
-	"github.com/yndd/nddo-runtime/pkg/odns"
+	"github.com/yndd/app-runtime/pkg/odns"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
