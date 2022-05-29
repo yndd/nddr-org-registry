@@ -90,12 +90,14 @@ docker-build: test ## Build docker image with the manager.
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
 
-package-build: ## build ndd package.
-	rm -rf package/nddr*
-	cd package;kubectl ndd package build -t intent;cd ..
+.PHONY: package-build
+package-build: kubectl-ndd ## build ndd package.
+	rm -rf package/*.nddpkg
+	cd package;PATH=$$PATH:$(LOCALBIN) kubectl ndd package build -t provider;cd ..
 
-package-push: ## build ndd package.
-	cd package;kubectl ndd package push ${PKG};cd ..
+.PHONY: package-push
+package-push: kubectl-ndd ## build ndd package.
+	cd package;ls;PATH=$$PATH:$(LOCALBIN) kubectl ndd package push ${PKG};cd ..
 
 
 ##@ Build Dependencies

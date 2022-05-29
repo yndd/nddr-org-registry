@@ -19,11 +19,11 @@ package v1alpha1
 import (
 	"reflect"
 
+	"github.com/yndd/app-runtime/pkg/odns"
 	nddv1 "github.com/yndd/ndd-runtime/apis/common/v1"
 	"github.com/yndd/ndd-runtime/pkg/resource"
 	"github.com/yndd/ndd-runtime/pkg/utils"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
-	"github.com/yndd/app-runtime/pkg/odns"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

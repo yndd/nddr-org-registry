@@ -20,9 +20,9 @@ import (
 	"context"
 
 	"github.com/yndd/ndd-runtime/pkg/logging"
+	"github.com/yndd/ndd-runtime/pkg/resource"
 	"github.com/yndd/nddo-grpc/resource/resourcepb"
 	nddov1 "github.com/yndd/nddo-runtime/apis/common/v1"
-	"github.com/yndd/ndd-runtime/pkg/resource"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

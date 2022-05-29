@@ -1,8 +1,28 @@
-
 apiVersion: meta.pkg.ndd.yndd.io/v1
-kind: Intent
+kind: Provider
 metadata:
-  name: nddr-org-registry
+  name: org-provider
+  namespace: ndd-system
 spec:
-  controller:
-    image: yndd/nddr-org-registry-controller:latest
+  pod:
+    name: org-provider
+    type: deployment
+    permissionRequests:
+    containers:
+    - container:
+        name: kube-rbac-proxy
+        image: gcr.io/kubebuilder/kube-rbac-proxy:v0.8.0
+        args:
+        - --secure-listen-address=0.0.0.0:8443
+        - --upstream=http://127.0.0.1:8080/
+        - --logtostderr=true
+        - --v=10
+        ports:
+        - containerPort: 8443
+          name: https
+    - container:
+        name: controller
+        image: yndd/nddr-org-registry-controller:latest
+      extras:
+      - {name: metrics, service: true, port: 8443, target-port: 443}
+      - {name: profiler, volume: true}
